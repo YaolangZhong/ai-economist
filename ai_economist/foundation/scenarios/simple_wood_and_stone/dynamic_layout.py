@@ -10,8 +10,7 @@ import numpy as np
 from scipy import signal
 
 from ai_economist.foundation.base.base_env import BaseEnvironment, scenario_registry
-
-from ..utils import rewards, social_metrics
+from ai_economist.foundation.scenarios.utils import rewards, social_metrics
 
 
 @scenario_registry.add
@@ -167,7 +166,7 @@ class Uniform(BaseEnvironment):
             "Wood": float(wood_clumpiness),
             "Stone": float(stone_clumpiness),
         }
-        assert all([0 <= v <= 1 for v in self.clumpiness.values()])
+        assert all(0 <= v <= 1 for v in self.clumpiness.values())
         #
         self.gradient_steepness = float(gradient_steepness)
         assert self.gradient_steepness >= 1.0
@@ -269,7 +268,7 @@ class Uniform(BaseEnvironment):
             ] = rewards.inv_income_weighted_coin_endowments(
                 coin_endowments=np.array(
                     [agent.total_endowment("Coin") for agent in self.world.agents]
-                ),
+                )
             )
         elif self.planner_reward_type == "inv_income_weighted_utility":
             curr_optimization_metric[
@@ -530,10 +529,7 @@ class Uniform(BaseEnvironment):
                 my_map = np.array(agent_idx_maps)
                 my_map[my_map == int(agent.idx) + 2] = 1
                 sidx = str(agent.idx)
-                obs[sidx] = {
-                    "map": curr_map,
-                    "idx_map": my_map,
-                }
+                obs[sidx] = {"map": curr_map, "idx_map": my_map}
                 obs[sidx].update(agent_invs[sidx])
 
         # Mobile agents only see within a window around their position
@@ -569,10 +565,7 @@ class Uniform(BaseEnvironment):
 
                 sidx = str(agent.idx)
 
-                obs[sidx] = {
-                    "map": visible_map,
-                    "idx_map": visible_idx,
-                }
+                obs[sidx] = {"map": visible_map, "idx_map": visible_idx}
                 obs[sidx].update(agent_locs[sidx])
                 obs[sidx].update(agent_invs[sidx])
 
@@ -994,10 +987,7 @@ class Quadrant(Uniform):
         s_prob_gradient = s_prob_gradient / np.sum(s_prob_gradient)
         w_prob_gradient = w_prob_gradient / np.sum(w_prob_gradient)
 
-        return {
-            "Stone": s_prob_gradient,
-            "Wood": w_prob_gradient,
-        }
+        return {"Stone": s_prob_gradient, "Wood": w_prob_gradient}
 
     def reset_starting_layout(self):
         """

@@ -67,9 +67,9 @@ class ContinuousDoubleAuction(BaseComponent):
         assert self.max_num_orders >= 1
 
         # The labor cost associated with creating a bid or ask order
+
         self.order_labor = float(order_labor)
-        if self.order_labor < 0:
-            self.order_labor = 0.0
+        self.order_labor = max(self.order_labor, 0.0)
 
         # Each collectible resource in the world can be traded via this component
         self.commodities = [
@@ -183,11 +183,7 @@ class ContinuousDoubleAuction(BaseComponent):
 
         assert self.price_floor <= max_payment <= self.price_ceiling
 
-        bid = {
-            "buyer": agent.idx,
-            "bid": int(max_payment),
-            "bid_lifetime": 0,
-        }
+        bid = {"buyer": agent.idx, "bid": int(max_payment), "bid_lifetime": 0}
 
         # Add this to the bid book
         self.bids[resource].append(bid)
@@ -218,11 +214,7 @@ class ContinuousDoubleAuction(BaseComponent):
         # is there an upper limit?
         assert self.price_floor <= min_income <= self.price_ceiling
 
-        ask = {
-            "seller": agent.idx,
-            "ask": int(min_income),
-            "ask_lifetime": 0,
-        }
+        ask = {"seller": agent.idx, "ask": int(min_income), "ask_lifetime": 0}
 
         # Add this to the ask book
         self.asks[resource].append(ask)
